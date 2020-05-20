@@ -34,7 +34,7 @@ end
 
 Vagrant.configure(2) do |config|
     config.vm.synced_folder ".", "/vagrant", owner: "vagrant"
-    config.vagrant.plugins = ["vagrant-vbguest"]
+    config.vagrant.plugins = ["vagrant-vbguest", "vagrant-env"]
     config.vm.provider "virtualbox" do |vb|
         # Don't boot with headless mode
         # vb.gui = true
@@ -55,11 +55,12 @@ Vagrant.configure(2) do |config|
         end
 
         django_debian9.vm.provision "ansible_local" do |ansible|
-            ansible.inventory_path      = "./provision/hosts"
-            ansible.limit               = "local"
-            ansible.playbook            = "provision/vagrant.yml"
+            ansible.inventory_path      = './provision/hosts'
+            ansible.limit               = 'local'
+            ansible.playbook            = 'provision/vagrant.yml'
             ansible.verbose             = 'vvvv'
             ansible.config_file         = 'ansible.cfg'
+            ansible.raw_arguments       = ['-e ansible_python_interpreter=/usr/bin/python3']
         end
 
         django_debian9.vm.box_check_update = true
