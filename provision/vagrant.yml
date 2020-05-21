@@ -5,3 +5,4 @@
   roles:
     - 1_server
     - 2_postgresql
+    - 3_rabbitmq

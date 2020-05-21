@@ -1,0 +1,20 @@
+---
+
+# Установка пакетов
+- include: install.yml
+
+# Обновим список пакетов
+- name: RabbitMQ | Install | apt-get update
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 60
+
+# Установим RabbitMQ
+- name: RabbitMQ | Install | install RabbitMQ
+  become: true
+  apt:
+    pkg: '{{ item }}'
+    state: present
+  with_items:
+    - rabbitmq-server

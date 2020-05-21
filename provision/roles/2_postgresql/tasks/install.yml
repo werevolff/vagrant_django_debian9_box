@@ -33,7 +33,6 @@
   become: true
   apt:
     update_cache: yes
-    cache_valid_time: 60
 
 # Установим требуемые пакеты
 - name: Postgresql | Install | install packages
