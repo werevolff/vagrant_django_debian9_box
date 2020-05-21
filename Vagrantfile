@@ -16,7 +16,7 @@ def get_cpus_count()
 end
 
 ##
-# This function gets size of the RAM
+# This function gets a share from the total RAM size
 def get_memory_size(divider)
     host = RbConfig::CONFIG['host_os']
     if host =~ /darwin/
@@ -33,6 +33,7 @@ def get_memory_size(divider)
 end
 
 Vagrant.configure(2) do |config|
+    config.env.enable
     config.vm.synced_folder ".", "/vagrant", owner: "vagrant"
     config.vagrant.plugins = ["vagrant-vbguest", "vagrant-env"]
     config.vm.provider "virtualbox" do |vb|
@@ -61,6 +62,9 @@ Vagrant.configure(2) do |config|
             ansible.verbose             = 'vvvv'
             ansible.config_file         = 'ansible.cfg'
             ansible.raw_arguments       = ['-e ansible_python_interpreter=/usr/bin/python3']
+            ansible.extra_vars          = {
+                PG_VERSION: ENV['PG_VERSION']
+            }
         end
 
         django_debian9.vm.box_check_update = true

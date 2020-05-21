@@ -1,0 +1,22 @@
+---
+
+# Установка пакетов
+- include: install.yml
+
+# Определение директории с кластером
+- name: Postgresql | Main | Stat cluster's folder
+  stat:
+    path: '/etc/postgresql/{{ PG_VERSION }}/main/'
+  register: p
+  become: true
+  when: global_debug|default(false)|bool == true
+
+# Изменим файл настройки авторизации в postgresql
+- name: Postgresql | Main | Patch pg_hba
+  template:
+    src: 'pg_hba.conf'
+    dest: '/etc/postgresql/{{ PG_VERSION }}/main/pg_hba.conf'
+    owner: 'postgres'
+  notify:
+    - restart postgresql
+  become: true
