@@ -46,19 +46,19 @@ Vagrant.configure(2) do |config|
 
     config.vm.define "django_debian9", primary: true, autorestart: false do |django_debian9|
         django_debian9.vm.box = "generic/debian9"
-        django_debian9.vm.network "private_network", ip: "192.168.99.100"
-        django_debian9.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh"
+        django_debian9.vm.network "private_network", ip: ENV['PRIVATE_NETWORK_IP']
+        django_debian9.vm.network "forwarded_port", guest: ENV['SSH_PORT_GUEST'], host: ENV['SSH_PORT_HOST'], id: "ssh"
 
         django_debian9.vm.provision "django_debian9", type: "shell" do |shell|
-            shell.path = "provision/install_ansible.sh"
+            shell.path = "build_box/install_ansible.sh"
             shell.privileged = false
             shell.keep_color = true
         end
 
         django_debian9.vm.provision "ansible_local" do |ansible|
-            ansible.inventory_path      = './provision/hosts'
+            ansible.inventory_path      = './build_box/hosts'
             ansible.limit               = 'local'
-            ansible.playbook            = 'provision/vagrant.yml'
+            ansible.playbook            = 'build_box/vagrant.yml'
             ansible.verbose             = 'vvvv'
             ansible.config_file         = 'ansible.cfg'
             ansible.raw_arguments       = ['-e ansible_python_interpreter=/usr/bin/python3']
