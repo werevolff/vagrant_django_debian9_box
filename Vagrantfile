@@ -34,7 +34,7 @@ end
 
 Vagrant.configure(2) do |config|
     config.env.enable
-    config.vm.synced_folder ".", "/vagrant", owner: "vagrant"
+    config.vm.synced_folder ".", "/vagrant", owner: ENV['DEFAULT_USER']
     config.vagrant.plugins = ["vagrant-vbguest", "vagrant-env"]
     config.vm.provider "virtualbox" do |vb|
         # Don't boot with headless mode
@@ -55,16 +55,42 @@ Vagrant.configure(2) do |config|
             shell.keep_color = true
         end
 
-        django_debian9.vm.provision "ansible_local" do |ansible|
-            ansible.inventory_path      = './build_box/hosts'
-            ansible.limit               = 'local'
-            ansible.playbook            = 'build_box/vagrant.yml'
-            ansible.verbose             = 'vvvv'
-            ansible.config_file         = 'ansible.cfg'
-            ansible.raw_arguments       = ['-e ansible_python_interpreter=/usr/bin/python3']
-            ansible.extra_vars          = {
-                PG_VERSION: ENV['PG_VERSION']
-            }
+        ansible_base_vars = {
+            PG_VERSION: ENV['PG_VERSION'],
+            PYENV_ROOT: ENV['PYENV_ROOT'],
+            PYTHON_SYSTEM_VERSION: ENV['PYTHON_SYSTEM_VERSION'],
+            DEFAULT_USER: ENV['DEFAULT_USER'],
+        }
+        ansible_provision_vars = {
+            GUNICORN_BACKEND_PID_DIR: ENV['GUNICORN_BACKEND_PID_DIR'],
+            GUNICORN_BACKEND_LOG_DIR: ENV['GUNICORN_BACKEND_LOG_DIR'],
+            BACKEND_PATH: ENV['BACKEND_PATH'],
+            BACKEND_ENV_PATH: ENV['BACKEND_ENV_PATH'],
+            MAIN_APP_NAME: ENV['MAIN_APP_NAME'],
+            GUNICORN_BIND: ENV['GUNICORN_BIND'],
+            POSTGRES_DB: ENV['POSTGRES_DB'],
+            POSTGRES_USER: ENV['POSTGRES_USER'],
+            POSTGRES_PASSWORD: ENV['POSTGRES_PASSWORD'],
+        }
+
+        django_debian9.vm.provision "ansible_local" do |ansible_build_box|
+            ansible_build_box.inventory_path      = './build_box/hosts'
+            ansible_build_box.limit               = 'local'
+            ansible_build_box.playbook            = 'build_box/vagrant.yml'
+            ansible_build_box.verbose             = 'vvvv'
+            ansible_build_box.config_file         = 'ansible.cfg'
+            ansible_build_box.raw_arguments       = ['-e ansible_python_interpreter=/usr/bin/python3']
+            ansible_build_box.extra_vars          = ansible_base_vars
+        end
+        
+        django_debian9.vm.provision "ansible_local" do |ansible_provision|
+            ansible_provision.inventory_path      = './build_box/hosts'
+            ansible_provision.limit               = 'local'
+            ansible_provision.playbook            = 'django/provision/vagrant.yml'
+            ansible_provision.verbose             = 'vvvv'
+            ansible_provision.config_file         = 'ansible.cfg'
+            ansible_provision.raw_arguments       = ['-e ansible_python_interpreter=/usr/bin/python3']
+            ansible_provision.extra_vars          = ansible_base_vars.merge(ansible_provision_vars)
         end
 
         django_debian9.vm.box_check_update = true

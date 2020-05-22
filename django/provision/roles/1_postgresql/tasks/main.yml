@@ -1,0 +1,43 @@
+---
+
+# Обновим список пакетов
+- name: Postgresql | Install | apt-get update
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 60
+
+# Установим psycopg2
+- name: Postgresql | Install | install psycopg2
+  become: true
+  apt:
+    pkg: '{{ item }}'
+    state: present
+  with_items:
+    - python3-psycopg2
+
+# Создадим базу для проекта
+- name: PostgreSQL | Create PostgreSQL db
+  postgresql_db:
+    name: '{{ POSTGRES_DB }}'
+    login_user: 'postgres'
+    encoding: 'UTF-8'
+    lc_collate: 'ru_RU.UTF-8'
+    lc_ctype: 'ru_RU.UTF-8'
+  become: true
+  become_user: 'postgres'
+  vars:
+    ansible_ssh_pipelining: true
+
+# Создадим пользователя для базы
+- name: PostgreSQL | Create PostgreSQL user
+  postgresql_user:
+    db: '{{ POSTGRES_DB }}'
+    login_user: 'postgres'
+    name: '{{ POSTGRES_USER }}'
+    password: '{{ POSTGRES_PASSWORD }}'
+    role_attr_flags: SUPERUSER
+  become: true
+  become_user: 'postgres'
+  vars:
+    ansible_ssh_pipelining: true

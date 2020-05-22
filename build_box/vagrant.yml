@@ -7,3 +7,4 @@
     - 2_postgresql
     - 3_rabbitmq
     - 4_redis
+    - 5_django

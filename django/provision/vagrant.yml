@@ -1,0 +1,7 @@
+---
+
+- hosts: local
+  gather_facts: true
+  roles:
+    - 1_postgresql
+    - 2_gunicorn
