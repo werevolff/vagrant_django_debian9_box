@@ -3,5 +3,8 @@
 - hosts: local
   gather_facts: true
   roles:
-    - 1_postgresql
-    - 2_gunicorn
+    - 1_django
+    - 2_postgresql
+    - 3_gunicorn
+    - 4_rabbitmq
+    - 5_celery

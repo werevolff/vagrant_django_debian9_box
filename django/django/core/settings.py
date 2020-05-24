@@ -7,6 +7,8 @@ env = environ.Env(
     SECRET_KEY=(str, ''),
     DEBUG=(bool, True),
     ALLOWED_HOSTS=(list, list()),
+    CELERY_BROKER=(str, ''),
+    CELERY_RESULT_BACKEND=(str, ''),
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -94,3 +96,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+
+# Celery broker
+CELERY_BROKER_URL = env('CELERY_BROKER')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')

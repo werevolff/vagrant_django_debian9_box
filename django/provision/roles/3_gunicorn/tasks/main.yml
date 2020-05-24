@@ -47,6 +47,7 @@
     dest: '/usr/lib/tmpfiles.d/gunicorn.conf'
   become: true
 
+# Перезапустим Gunicorn
 - name: Gunicorn | Restart service
   systemd:
     name: 'gunicorn'
