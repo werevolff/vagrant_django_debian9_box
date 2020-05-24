@@ -130,6 +130,7 @@ dmypy.json
 
 # Project-specified ignores
 .idea/
+.vagrant/
 .env
 .pyenv/
 .venv/
