@@ -10,3 +10,4 @@
     - 5_gunicorn
     - 6_rabbitmq
     - 7_celery
+    - 8_celerybeat

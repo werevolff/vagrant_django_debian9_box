@@ -13,6 +13,7 @@
 # Создадим директорию под .pid файлы
 - name: Celery | Install | create pid files directory
   become: true
+  become_user: '{{ DEFAULT_USER }}'
   file:
     path: '{{ CELERY_BACKEND_PID_DIR }}'
     state: directory
@@ -21,6 +22,7 @@
 # Создадим директорию под .log файлы
 - name: Celery | Install | create log files directory
   become: true
+  become_user: '{{ DEFAULT_USER }}'
   file:
     path: '{{ CELERY_BACKEND_LOG_DIR }}'
     state: directory

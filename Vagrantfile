@@ -79,6 +79,8 @@ Vagrant.configure(2) do |config|
             RABBITMQ_USER: ENV['RABBITMQ_USER'],
             RABBITMQ_PASSWORD: ENV['RABBITMQ_PASSWORD'],
             VENV_PATH: ENV['VENV_PATH'],
+            CELERY_BEAT_BACKEND_PID_DIR: ENV['CELERY_BEAT_BACKEND_PID_DIR'],
+            CELERY_BEAT_BACKEND_LOG_DIR: ENV['CELERY_BEAT_BACKEND_LOG_DIR'],
         }
 
         #django_debian9.vm.provision "ansible_local" do |ansible_build_box|
