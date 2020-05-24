@@ -70,6 +70,7 @@ Vagrant.configure(2) do |config|
             BACKEND_ENV_PATH: ENV['BACKEND_ENV_PATH'],
             MAIN_APP_NAME: ENV['MAIN_APP_NAME'],
             GUNICORN_BIND: ENV['GUNICORN_BIND'],
+            DROP_DATABASE: ENV['DROP_DATABASE'],
             POSTGRES_DB: ENV['POSTGRES_DB'],
             POSTGRES_USER: ENV['POSTGRES_USER'],
             POSTGRES_PASSWORD: ENV['POSTGRES_PASSWORD'],

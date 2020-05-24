@@ -1,20 +1,45 @@
 ---
 
 # Обновим список пакетов
-- name: Postgresql | Install | apt-get update
+- name: Postgresql | apt-get update
   become: true
   apt:
     update_cache: yes
     cache_valid_time: 60
 
 # Установим psycopg2
-- name: Postgresql | Install | install psycopg2
+- name: Postgresql | install psycopg2
   become: true
   apt:
     pkg: '{{ item }}'
     state: present
   with_items:
     - python3-psycopg2
+
+# Определение директории с кластером
+- name: Postgresql | Stat cluster's folder
+  stat:
+    path: '/etc/postgresql/{{ PG_VERSION }}/main/'
+  register: p
+  become: true
+
+# Удалим базу данных проекта
+- name: Postgresql | Drop PostgreSQL db
+  postgresql_db:
+    name: '{{ POSTGRES_DB }}'
+    state: 'absent'
+  become: true
+  become_user: 'postgres'
+  vars:
+    ansible_ssh_pipelining: true
+  when: DROP_DATABASE|default(true)|bool == true and p.stat.exists
+
+# Создадим кластер, если он ещё не создан
+- name: Postgresql | Create cluster
+  shell: 'pg_createcluster {{ PG_VERSION }} main --start'
+  when: not p.stat.exists
+  become: true
+  become_user: 'postgres'
 
 # Создадим базу для проекта
 - name: PostgreSQL | Create PostgreSQL db
@@ -41,3 +66,12 @@
   become_user: 'postgres'
   vars:
     ansible_ssh_pipelining: true
+
+# Перезапустим postgresql
+- name: Postgresql | Restart service
+  systemd:
+    name: 'postgresql'
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: true
