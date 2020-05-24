@@ -9,10 +9,7 @@
 
 # Удалим старую папку с media
 - name: Django | Remove old media dir
-  file:
-    path: '{{ MEDIA_ROOT }}'
-    state: absent
-    force: yes
+  shell: 'rm -rf {{ MEDIA_ROOT }}'
   become: true
   when: DROP_DATABASE|default(true)|bool == true
 
@@ -29,6 +26,7 @@
   file:
     path: '{{ MEDIA_ROOT }}'
     state: directory
+    mode: 0755
   become: true
   become_user: '{{ DEFAULT_USER }}'
   when: not media_d.stat.exists

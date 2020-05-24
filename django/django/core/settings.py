@@ -12,6 +12,8 @@ env = environ.Env(
     STATICFILES_DIRS=(list, list()),
     STATIC_ROOT=(str, ''),
     MEDIA_ROOT=(str, ''),
+    MAIN_APP_NAME=(str, ''),
+    DJANGO_LOG_DIR=(str, ''),
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -49,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = env('MAIN_APP_NAME') + '.urls'
 
 TEMPLATES = [
     {
@@ -77,16 +79,20 @@ DATABASES = {
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+                'UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+                'MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+                'CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.'
+                'NumericPasswordValidator',
     },
 ]
 
@@ -109,3 +115,43 @@ MEDIA_URL = '/media/'
 # Celery broker
 CELERY_BROKER_URL = env('CELERY_BROKER')
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
+
+# Logging
+LOG_DIR = env('DJANGO_LOG_DIR')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': 'django [%(asctime)s] %(levelname)s '
+                      '[%(name)s:%(lineno)s] %(message)s',
+            'datefmt': '%d/%b/%Y %H:%M:%S'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        'sql_queries': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'sql_queries.log'),
+            'maxBytes': 50000,
+            'backupCount': 2,
+            'formatter': 'standard',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+        }
+    },
+}
+
+if DEBUG:
+    LOGGING['loggers']['django.db.backends'] = {
+        'handlers': ['sql_queries'],
+        'level': 'DEBUG',
+    }
