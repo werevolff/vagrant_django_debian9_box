@@ -14,6 +14,7 @@ env = environ.Env(
     MEDIA_ROOT=(str, ''),
     MAIN_APP_NAME=(str, ''),
     DJANGO_LOG_DIR=(str, ''),
+    LOCAL_MAIL_DIR=(str, ''),
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -155,3 +156,8 @@ if DEBUG:
         'handlers': ['sql_queries'],
         'level': 'DEBUG',
     }
+
+# Email
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+    EMAIL_FILE_PATH = env('LOCAL_MAIL_DIR')
