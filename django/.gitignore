@@ -130,8 +130,10 @@ dmypy.json
 
 # Project-specified ignores
 .idea/
+.vagrant/
 .env
-.pyenv/
+.pid/
+*.box
 gunicorn_conf.py
 .venv/
 *.bak
