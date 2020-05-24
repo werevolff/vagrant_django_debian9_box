@@ -22,8 +22,38 @@ vagrant up
 Проект будет доступен по адресу: http://192.168.99.100/
 
 ### Сборка образа:
+Если вы уже запускали проект, выполните:
+```bash
+cd <repo_root>
+vagrant destroy
+```
+
+Откройте .env файл в корне проекта и поменяйте
+
+RUN_DJANGO_PROJECT=false
+
+на
+
+RUN_DJANGO_PROJECT=true
+
+Выполните
+
+```bash
+cd <repo_root>
+vagrant up
+```
+
 Готовую виртуальную машину можно подготовить к экспорту в другой проект, выполнив команду:
 ```bash
 cd <repo_root>
 vagrant package --output=./vagrant_django_debian9.box
+vagrant box add django_debian9 ./django_debian9.box
+```
+
+### Развёртывание проекта:
+Скопируйте содержимое папки django в корень вашего проекта. Выполните:
+
+```bash
+cd <your_new_project_root>
+vagrant up
 ```
