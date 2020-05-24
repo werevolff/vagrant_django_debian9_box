@@ -1,0 +1,27 @@
+---
+
+- stat:
+    path: '{{ VENV_PATH }}'
+  register: venv_p
+  become: true
+  become_user: '{{ DEFAULT_USER }}'
+
+- name: Virtualenv | Remove old virtualenv dir
+  file:
+    path: '{{ VENV_PATH }}'
+    state: 'absent'
+  when: venv_p.stat.exists
+  become: true
+  become_user: '{{ DEFAULT_USER }}'
+
+- name: Virtualenv | Create virtualenv
+  shell: '{{ PYENV_ROOT }}/versions/{{ PYTHON_PROJECT_VERSION }}/bin/virtualenv -p {{ PYENV_ROOT }}/versions/{{ PYTHON_PROJECT_VERSION }}/bin/python {{ VENV_PATH }}'
+  become: true
+  become_user: '{{ DEFAULT_USER }}'
+
+- name: Virtualenv | Install pip requirements
+  pip:
+    requirements: '{{ REQUIREMENTS_PATH }}'
+    virtualenv: '{{ VENV_PATH }}'
+  become: true
+  become_user: '{{ DEFAULT_USER }}'

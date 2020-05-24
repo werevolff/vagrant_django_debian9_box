@@ -10,7 +10,7 @@ Group={{ DEFAULT_USER }}
 WorkingDirectory={{ BACKEND_PATH }}
 Environment=PYTHONPATH={{ BACKEND_PATH }}
 EnvironmentFile={{ BACKEND_ENV_PATH }}
-ExecStart={{ PYENV_ROOT }}/versions/{{ PYTHON_SYSTEM_VERSION }}/bin/gunicorn {{ MAIN_APP_NAME }}.wsgi:application -c 'python:{{ MAIN_APP_NAME }}.gunicorn_conf' --pythonpath '{{ BACKEND_PATH }}'
+ExecStart={{ VENV_PATH }}/bin/gunicorn {{ MAIN_APP_NAME }}.wsgi:application -c 'python:{{ MAIN_APP_NAME }}.gunicorn_conf' --pythonpath '{{ BACKEND_PATH }}'
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 PrivateTmp=true

@@ -62,6 +62,8 @@ Vagrant.configure(2) do |config|
             DEFAULT_USER: ENV['DEFAULT_USER'],
         }
         ansible_provision_vars = {
+            PYTHON_PROJECT_VERSION: ENV['PYTHON_PROJECT_VERSION'],
+            REQUIREMENTS_PATH: ENV['REQUIREMENTS_PATH'],
             GUNICORN_BACKEND_PID_DIR: ENV['GUNICORN_BACKEND_PID_DIR'],
             GUNICORN_BACKEND_LOG_DIR: ENV['GUNICORN_BACKEND_LOG_DIR'],
             BACKEND_PATH: ENV['BACKEND_PATH'],
@@ -76,6 +78,7 @@ Vagrant.configure(2) do |config|
             RABBITMQ_VHOST: ENV['RABBITMQ_VHOST'],
             RABBITMQ_USER: ENV['RABBITMQ_USER'],
             RABBITMQ_PASSWORD: ENV['RABBITMQ_PASSWORD'],
+            VENV_PATH: ENV['VENV_PATH'],
         }
 
         #django_debian9.vm.provision "ansible_local" do |ansible_build_box|

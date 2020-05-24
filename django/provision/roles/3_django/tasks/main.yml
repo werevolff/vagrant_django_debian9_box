@@ -1,0 +1,8 @@
+---
+
+- name: Django | Install pip requirements
+  pip:
+    requirements: '{{ REQUIREMENTS_PATH }}'
+    virtualenv: '{{ VENV_PATH }}'
+  become: true
+  become_user: '{{ DEFAULT_USER }}'

@@ -1,8 +1,0 @@
----
-
-- name: Django | Install pip requirements
-  pip:
-    requirements: '/vagrant/django/requirements/local.txt'
-    executable: '{{ PYENV_ROOT }}/versions/{{ PYTHON_SYSTEM_VERSION }}/bin/pip'
-  become: true
-  become_user: '{{ DEFAULT_USER }}'
