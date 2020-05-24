@@ -133,3 +133,4 @@ dmypy.json
 .env
 .pyenv/
 gunicorn_conf.py
+.venv/
