@@ -9,6 +9,9 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, list()),
     CELERY_BROKER=(str, ''),
     CELERY_RESULT_BACKEND=(str, ''),
+    STATICFILES_DIRS=(list, list()),
+    STATIC_ROOT=(str, ''),
+    MEDIA_ROOT=(str, ''),
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -96,6 +99,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+STATICFILES_DIRS = env('STATICFILES_DIRS')
+STATIC_ROOT = env('STATIC_ROOT')
+
+# Media
+MEDIA_ROOT = env('MEDIA_ROOT')
+MEDIA_URL = '/media/'
 
 # Celery broker
 CELERY_BROKER_URL = env('CELERY_BROKER')

@@ -1,8 +1,34 @@
 ---
 
-- name: Django | Install pip requirements
-  pip:
-    requirements: '{{ REQUIREMENTS_PATH }}'
-    virtualenv: '{{ VENV_PATH }}'
+- name: Django | Stat media folder
+  stat:
+    path: '{{ MEDIA_ROOT }}'
+  register: media_d
   become: true
   become_user: '{{ DEFAULT_USER }}'
+
+# Удалим старую папку с media
+- name: Django | Remove old media dir
+  file:
+    path: '{{ MEDIA_ROOT }}'
+    state: absent
+    force: yes
+  become: true
+  when: DROP_DATABASE|default(true)|bool == true
+
+- name: Django | Stat media folder (after the removing)
+  stat:
+    path: '{{ MEDIA_ROOT }}'
+  register: media_d
+  become: true
+  become_user: '{{ DEFAULT_USER }}'
+  when: DROP_DATABASE|default(true)|bool == true
+
+# Создадим папку с media
+- name: Django | Create media dir
+  file:
+    path: '{{ MEDIA_ROOT }}'
+    state: directory
+  become: true
+  become_user: '{{ DEFAULT_USER }}'
+  when: not media_d.stat.exists
